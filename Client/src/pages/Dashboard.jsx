@@ -9,6 +9,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false)
   const { email } = useEmail()
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const [searchParams] = useSearchParams()
   const prefillKeyword = searchParams.get("keyword") || ""
 
@@ -23,13 +25,13 @@ const Dashboard = () => {
     try {
       console.log("Sending request:", { keyword, maxCount });
 
-      const res = await fetch("http://localhost:5000/search", {
+      const res = await fetch(`${API_BASE_URL}/search`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ keyword, max_results: parseInt(maxCount) || 5 }),
-      })
+      });
 
       const data = await res.json()
 

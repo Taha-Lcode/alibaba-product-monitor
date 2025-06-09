@@ -7,4 +7,4 @@ COPY . /app
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-CMD ["python", "job_runnee.py"]
+CMD ["python", "job_runner.py"]

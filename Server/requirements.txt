@@ -3,3 +3,6 @@ beautifulsoup4
 python-telegram-bot
 schedule
 python-dotenv
+playwright
+flask
+flask-cors
