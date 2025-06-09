@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "../components/ui/button"
 
 const UNSPLASH_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const fetchImageForKeyword = async (keyword) => {
   const cached = localStorage.getItem(`image:${keyword}`)
@@ -27,7 +28,7 @@ const Products = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetch("http://localhost:5000/keywords")
+    fetch(`${API_BASE_URL}/keywords`)
       .then((res) => res.json())
       .then(async (data) => {
         const keys = data.keywords || []
