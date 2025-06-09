@@ -2,21 +2,39 @@ from flask import Flask, request, jsonify
 from scraper.playwright_scraper import scrape_alibaba
 from db.models import insert_product, initialize_db, close_connection
 from notifier.email_notify import send_email
+from flask_cors import CORS
+from db.models import get_all_keywords
+import traceback
+from db.models import insert_keyword
 
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:5173"])
 initialize_db()
 
-
 @app.route("/search", methods=["POST"])
+def search():
+    return search_and_notify()
+
+@app.route("/keywords", methods=["GET"])
+def get_keywords():
+    try:
+        keywords = get_all_keywords()
+        return jsonify({ "keywords": keywords })
+    except Exception as e:
+        print("🔥 ERROR while fetching keywords:")
+        import traceback
+        traceback.print_exc()
+        return jsonify({ "error": str(e) }), 500
 
 def search_and_notify():
     data = request.get_json()
     keyword = data.get("keyword")
     max_results = int(data.get("max_results", 10))
-    receiver = data.get("receiver")
+    receiver = data.get("receiver", "default@gmail.com") 
+    insert_keyword(keyword) 
 
-    if not keyword or not receiver:
-        return jsonify({"error": "keyword and receiver are required"}), 400
+    if not keyword:
+        return jsonify({"error": "keyword is required"}), 400
 
     try:
         results = scrape_alibaba(keyword=keyword, max_results=max_results)
@@ -39,14 +57,14 @@ def search_and_notify():
 
         return jsonify({
             "message": f"{len(new_products)} new products found and notified.",
-            "products": new_products
+            "products": new_products,
+            "total": len(results)
         })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
         close_connection()
-
 
 if __name__ == "__main__":
     app.run(debug=True)

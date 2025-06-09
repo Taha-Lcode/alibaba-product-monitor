@@ -27,17 +27,33 @@ def initialize_db():
 
     conn.commit()
 
+def create_keyword_table():
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS keyword_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            keyword TEXT NOT NULL,
+            searched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    
 def insert_keyword(keyword):
-    try:
-        cursor.execute("INSERT INTO search_history (keyword) VALUES (?)", (keyword.strip().lower(),))
-        conn.commit()
-        print(f"[DB] Keyword '{keyword}' added to history.")
-    except sqlite3.IntegrityError:
-        print(f"[DB] Keyword '{keyword}' already in history.")
+    conn = sqlite3.connect("products.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT OR IGNORE INTO search_history (keyword)
+        VALUES (?)
+    """, (keyword,))
+    conn.commit()
+    conn.close()
 
 def get_all_keywords():
-    cursor.execute("SELECT keyword FROM search_history")
-    return [row[0] for row in cursor.fetchall()]
+    conn = sqlite3.connect("products.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT keyword FROM search_history ORDER BY timestamp DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    return [row[0] for row in rows]
 
 def insert_product(product):
     try:
