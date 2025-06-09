@@ -6,12 +6,16 @@ from flask_cors import CORS
 from db.models import get_all_keywords
 import traceback
 from db.models import insert_keyword
+import os
 from dotenv import load_dotenv
 
 load_dotenv() 
 
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
 app = Flask(__name__)
-CORS(app, origins=["FRONTEND_URL"])
+CORS(app, origins=[FRONTEND_URL])
+
 initialize_db()
 
 @app.route("/search", methods=["POST"])
