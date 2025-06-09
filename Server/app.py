@@ -13,7 +13,22 @@ initialize_db()
 
 @app.route("/search", methods=["POST"])
 def search():
-    return search_and_notify()
+    try:
+        data = request.get_json()
+        keyword = data.get("keyword")
+        max_results = int(data.get("max_results", 5))
+        receiver = data.get("receiver")
+
+        if not keyword:
+            return jsonify({"error": "Missing keyword"}), 400
+
+        results = scrape_alibaba(keyword, max_results)
+
+        return jsonify({"products": results, "total": len(results)})
+
+    except Exception as e:
+        print("🔥 ERROR in /search:", e)
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/keywords", methods=["GET"])
 def get_keywords():

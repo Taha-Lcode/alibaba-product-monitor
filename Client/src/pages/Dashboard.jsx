@@ -18,29 +18,33 @@ const Dashboard = () => {
     if (prefillKeyword) setKeyword(prefillKeyword)
   }, [prefillKeyword])
 
-  const handleSearch = async ({ keyword, maxCount, email }) => {
+  const handleSearch = async ({ keyword, maxCount }) => {
     setLoading(true)
     try {
+      console.log("Sending request:", { keyword, maxCount });
+
       const res = await fetch("http://localhost:5000/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          keyword,
-          max_results: parseInt(maxCount) || 5,
-          receiver: email || "default@gmail.com" 
-        }),
+        body: JSON.stringify({ keyword, max_results: parseInt(maxCount) || 5 }),
       })
 
       const data = await res.json()
+
+      if (!res.ok) {
+        console.error("[Frontend Error]", data) 
+        return
+      }
+
       setResults(data.products || [])
     } catch (err) {
       console.error("Search failed:", err)
     } finally {
       setLoading(false)
-    }
   }
+}
 
   return (
     <div className="min-h-screen w-full px-4 py-12">
