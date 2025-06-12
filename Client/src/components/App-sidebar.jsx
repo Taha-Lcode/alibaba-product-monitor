@@ -36,8 +36,10 @@ const App_sidebar = () => {
 
   const { email, setEmail } = useEmail()
   const [editing, setEditing] = useState(false)
+  
   const [showSettings, setShowSettings] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(false)
+
   const [schedulerEnabled, setSchedulerEnabled] = useState(false)
   const [scheduleTime, setScheduleTime] = useState("09:00")
 
