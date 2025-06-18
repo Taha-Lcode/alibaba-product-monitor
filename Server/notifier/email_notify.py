@@ -9,7 +9,6 @@ EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 def send_email(subject, body, to_address):
-    print(f"[EMAIL DEBUG] Preparing to send email to: {to_address}")
     
     msg = EmailMessage()
     msg["From"] = EMAIL_ADDRESS

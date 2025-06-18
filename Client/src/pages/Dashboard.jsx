@@ -25,32 +25,33 @@ const Dashboard = () => {
     try {
       console.log("Sending request:", { keyword, maxCount });
 
-      const res = await fetch(`${API_BASE_URL}/search-and-notify`, {
+      const res = await fetch(`${API_BASE_URL}/new-launches`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-        keyword,
-        max_results: parseInt(maxCount) || 5,
-        receiver: email 
+          category: keyword, 
+          max_results: parseInt(maxCount) || 5,
+          receiver: email
         }),
       });
 
       const data = await res.json()
 
       if (!res.ok) {
-        console.error("[Frontend Error]", data) 
+        console.error("[Frontend Error]", data)
         return
       }
 
       setResults(data.products || [])
+      console.log("Results received from backend:", data.products)
     } catch (err) {
       console.error("Search failed:", err)
     } finally {
       setLoading(false)
+    }
   }
-}
 
   return (
     <div className="min-h-screen w-full px-4 py-12">

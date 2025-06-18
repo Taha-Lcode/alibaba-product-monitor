@@ -1,8 +1,7 @@
-requests
+pyppeteer==1.0.2
 beautifulsoup4
-python-telegram-bot
-schedule
-python-dotenv
-playwright
 flask
 flask-cors
+schedule
+python-dotenv
+requests
